@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import MainLayout from "../layouts/MainLayout";
+import SalesChart from "../components/SalesChart";
 
 function Dashboard() {
 
@@ -34,6 +35,9 @@ function Dashboard() {
       <div className="flex justify-between items-center mb-10">
 
         <div>
+            <div className="mt-10">
+  <SalesChart />
+</div>
 
           <h1 className="text-4xl font-bold">
             Dashboard Overview
