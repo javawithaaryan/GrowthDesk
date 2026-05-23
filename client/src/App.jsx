@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Leads from "./pages/Leads";
 import Pipeline from "./pages/Pipeline";
+import Reports from "./pages/Reports";
 
 function App() {
   return (
@@ -44,6 +45,14 @@ function App() {
   element={
     <ProtectedRoute>
       <Pipeline />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/reports"
+  element={
+    <ProtectedRoute>
+      <Reports />
     </ProtectedRoute>
   }
 />
