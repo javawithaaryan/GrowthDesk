@@ -1,32 +1,48 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import MainLayout from "../layouts/MainLayout";
 
 function Pipeline() {
 
+  const [leads, setLeads] = useState([]);
+
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo")
+  );
+
+  const fetchLeads = async () => {
+
+    try {
+
+      const response = await axios.get(
+        "http://localhost:5000/api/leads",
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+
+      setLeads(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
   const columns = [
-    {
-      title: "New Lead",
-      leads: ["Raj Industries", "TechNova Pvt Ltd"],
-    },
-
-    {
-      title: "Contacted",
-      leads: ["Skyline Manufacturing"],
-    },
-
-    {
-      title: "Quotation Sent",
-      leads: ["Vertex Corp"],
-    },
-
-    {
-      title: "Negotiation",
-      leads: ["BuildCraft Ltd"],
-    },
-
-    {
-      title: "Closed Won",
-      leads: ["FutureSteel"],
-    },
+    "New Lead",
+    "Contacted",
+    "Quotation Sent",
+    "Negotiation",
+    "Closed Won",
   ];
 
   return (
@@ -50,38 +66,50 @@ function Pipeline() {
 
       <div className="grid grid-cols-5 gap-6">
 
-        {columns.map((column, index) => (
+        {columns.map((status, index) => (
+
           <div
             key={index}
-            className="bg-white rounded-2xl shadow p-4"
+            className="bg-white rounded-2xl shadow p-4 min-h-[500px]"
           >
 
-            <h2 className="text-lg font-bold mb-4">
-              {column.title}
+            <h2 className="text-lg font-bold mb-6">
+              {status}
             </h2>
 
             <div className="space-y-4">
 
-              {column.leads.map((lead, i) => (
-                <div
-                  key={i}
-                  className="bg-gray-100 p-4 rounded-xl shadow-sm hover:bg-gray-200 transition"
-                >
+              {leads
+                .filter(
+                  (lead) => lead.status === status
+                )
+                .map((lead) => (
 
-                  <p className="font-medium">
-                    {lead}
-                  </p>
+                  <div
+                    key={lead._id}
+                    className="bg-gray-100 p-4 rounded-xl shadow-sm hover:bg-gray-200 transition"
+                  >
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    Manufacturing Client
-                  </p>
+                    <p className="font-semibold">
+                      {lead.clientName}
+                    </p>
 
-                </div>
-              ))}
+                    <p className="text-sm text-gray-600 mt-1">
+                      {lead.company}
+                    </p>
+
+                    <p className="text-xs text-gray-500 mt-3">
+                      {lead.email}
+                    </p>
+
+                  </div>
+
+                ))}
 
             </div>
 
           </div>
+
         ))}
 
       </div>
