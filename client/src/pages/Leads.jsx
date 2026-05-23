@@ -5,15 +5,15 @@ import MainLayout from "../layouts/MainLayout";
 
 function Leads() {
 
-const [leads, setLeads] = useState([]);
+  const [leads, setLeads] = useState([]);
 
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-const [error, setError] = useState("");
-const [search, setSearch] = useState("");
+  const [error, setError] = useState("");
+
+  const [search, setSearch] = useState("");
 
   const [formData, setFormData] = useState({
-
     clientName: "",
     company: "",
     email: "",
@@ -26,33 +26,33 @@ const [search, setSearch] = useState("");
 
   const fetchLeads = async () => {
 
-  try {
+    try {
 
-    setLoading(true);
+      setLoading(true);
 
-    const response = await axios.get(
-      "http://localhost:5000/api/leads",
-      {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    );
+      const response = await axios.get(
+        "http://localhost:5000/api/leads",
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
 
-    setLeads(response.data);
+      setLeads(response.data);
 
-    setError("");
+      setError("");
 
-  } catch (error) {
+    } catch (error) {
 
-    setError("Failed to fetch leads");
+      setError("Failed to fetch leads");
 
-  } finally {
+    } finally {
 
-    setLoading(false);
+      setLoading(false);
 
-  }
-};
+    }
+  };
 
   useEffect(() => {
     fetchLeads();
@@ -142,7 +142,7 @@ const [search, setSearch] = useState("");
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow mb-8 grid grid-cols-2 gap-4"
+        className="bg-white p-6 rounded-2xl shadow mb-8 grid grid-cols-1 md:grid-cols-2 gap-4"
       >
 
         <input
@@ -181,37 +181,37 @@ const [search, setSearch] = useState("");
           className="border p-3 rounded-lg"
         />
 
-        <button className="bg-black text-white p-3 rounded-lg col-span-2 hover:bg-gray-800 transition">
+        <button className="bg-black text-white p-3 rounded-lg md:col-span-2 hover:bg-gray-800 transition">
           Add Lead
         </button>
 
       </form>
 
+      <div className="mb-6">
+
+        <input
+          type="text"
+          placeholder="Search leads..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="w-full bg-white p-4 rounded-2xl shadow border"
+        />
+
+      </div>
+
       {loading && (
-  <div className="bg-white p-6 rounded-2xl shadow mb-6">
-    Loading leads...
-  </div>
-)}
+        <div className="bg-white p-6 rounded-2xl shadow mb-6">
+          Loading leads...
+        </div>
+      )}
 
-{error && (
-  <div className="bg-red-100 text-red-600 p-4 rounded-2xl mb-6">
-    {error}
-  </div>
-)}
-
-<div className="mb-6">
-
-  <input
-    type="text"
-    placeholder="Search leads..."
-    value={search}
-    onChange={(e) =>
-      setSearch(e.target.value)
-    }
-    className="w-full bg-white p-4 rounded-2xl shadow border"
-  />
-
-</div>
+      {error && (
+        <div className="bg-red-100 text-red-600 p-4 rounded-2xl mb-6">
+          {error}
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl shadow overflow-hidden">
 
@@ -244,107 +244,109 @@ const [search, setSearch] = useState("");
           <tbody>
 
             {leads.length === 0 && !loading && (
-  <tr>
-    <td
-      colSpan="4"
-      className="text-center p-10 text-gray-500"
-    >
-      No leads found. Add your first lead.
-    </td>
-  </tr>
-)}
+              <tr>
+                <td
+                  colSpan="4"
+                  className="text-center p-10 text-gray-500"
+                >
+                  No leads available yet. Start by adding your first client lead.
+                </td>
+              </tr>
+            )}
 
             {leads
-  .filter((lead) =>
-    lead.clientName
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  )
-  .map((lead) => (
-              <tr
-                key={lead._id}
-                className="border-b hover:bg-gray-50"
-              >
+              .filter((lead) =>
+                lead.clientName
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+              )
+              .map((lead) => (
 
-                <td className="p-4">
-                  {lead.clientName}
-                </td>
+                <tr
+                  key={lead._id}
+                  className="border-b hover:bg-gray-50"
+                >
 
-                <td className="p-4">
-                  {lead.company}
-                </td>
+                  <td className="p-4">
+                    {lead.clientName}
+                  </td>
 
-                <td className="p-4">
+                  <td className="p-4">
+                    {lead.company}
+                  </td>
 
-                  <select
-  value={lead.status}
-  onChange={async (e) => {
+                  <td className="p-4">
 
-    try {
+                    <select
+                      value={lead.status}
+                      onChange={async (e) => {
 
-      await axios.put(
-        `http://localhost:5000/api/leads/${lead._id}`,
-        {
-          status: e.target.value,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+                        try {
 
-      fetchLeads();
+                          await axios.put(
+                            `http://localhost:5000/api/leads/${lead._id}`,
+                            {
+                              status: e.target.value,
+                            },
+                            {
+                              headers: {
+                                Authorization: `Bearer ${userInfo.token}`,
+                              },
+                            }
+                          );
 
-    } catch (error) {
+                          fetchLeads();
 
-      console.log(error);
+                        } catch (error) {
 
-    }
+                          console.log(error);
 
-  }}
-  className="border px-3 py-2 rounded-lg"
->
+                        }
 
-  <option>
-    New Lead
-  </option>
+                      }}
+                      className="border px-3 py-2 rounded-lg"
+                    >
 
-  <option>
-    Contacted
-  </option>
+                      <option>
+                        New Lead
+                      </option>
 
-  <option>
-    Quotation Sent
-  </option>
+                      <option>
+                        Contacted
+                      </option>
 
-  <option>
-    Negotiation
-  </option>
+                      <option>
+                        Quotation Sent
+                      </option>
 
-  <option>
-    Closed Won
-  </option>
+                      <option>
+                        Negotiation
+                      </option>
 
-</select>
+                      <option>
+                        Closed Won
+                      </option>
 
-                </td>
+                    </select>
 
-                <td className="p-4">
+                  </td>
 
-                  <button
-                    onClick={() =>
-                      deleteLead(lead._id)
-                    }
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-                  >
-                    Delete
-                  </button>
+                  <td className="p-4">
 
-                </td>
+                    <button
+                      onClick={() =>
+                        deleteLead(lead._id)
+                      }
+                      className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
 
-              </tr>
-            ))}
+                  </td>
+
+                </tr>
+
+              ))}
 
           </tbody>
 

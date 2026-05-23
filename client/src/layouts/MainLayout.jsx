@@ -5,9 +5,11 @@ function MainLayout({ children }) {
   const navigate = useNavigate();
 
   const logoutHandler = () => {
+
     localStorage.removeItem("userInfo");
 
     navigate("/");
+
   };
 
   return (
@@ -63,12 +65,20 @@ function MainLayout({ children }) {
 
         </div>
 
-        <button
-          onClick={logoutHandler}
-          className="bg-white text-black py-3 rounded-xl font-semibold hover:bg-gray-200 transition"
-        >
-          Logout
-        </button>
+        <div>
+
+          <button
+            onClick={logoutHandler}
+            className="bg-white text-black py-3 rounded-xl font-semibold hover:bg-gray-200 transition w-full"
+          >
+            Logout
+          </button>
+
+          <p className="text-xs text-gray-400 mt-6 text-center">
+            GrowthDesk CRM v1.0
+          </p>
+
+        </div>
 
       </div>
 

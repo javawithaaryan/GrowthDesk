@@ -64,7 +64,7 @@ function Pipeline() {
 
       </div>
 
-      <div className="grid grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
 
         {columns.map((status, index) => (
 

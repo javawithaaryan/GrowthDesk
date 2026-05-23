@@ -14,14 +14,19 @@ function Dashboard() {
   });
 
   const fetchStats = async () => {
+
     try {
+
       const response = await axios.get(
         "http://localhost:5000/api/dashboard"
       );
 
       setStats(response.data);
+
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
@@ -35,9 +40,6 @@ function Dashboard() {
       <div className="flex justify-between items-center mb-10">
 
         <div>
-            <div className="mt-10">
-  <SalesChart />
-</div>
 
           <h1 className="text-4xl font-bold">
             Dashboard Overview
@@ -51,7 +53,7 @@ function Dashboard() {
 
       </div>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
         <div className="bg-white p-6 rounded-2xl shadow">
 
@@ -101,6 +103,10 @@ function Dashboard() {
 
         </div>
 
+      </div>
+
+      <div className="mt-10">
+        <SalesChart />
       </div>
 
     </MainLayout>
