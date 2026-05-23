@@ -5,9 +5,15 @@ import MainLayout from "../layouts/MainLayout";
 
 function Leads() {
 
-  const [leads, setLeads] = useState([]);
+const [leads, setLeads] = useState([]);
+
+const [loading, setLoading] = useState(false);
+
+const [error, setError] = useState("");
+const [search, setSearch] = useState("");
 
   const [formData, setFormData] = useState({
+
     clientName: "",
     company: "",
     email: "",
@@ -20,25 +26,33 @@ function Leads() {
 
   const fetchLeads = async () => {
 
-    try {
+  try {
 
-      const response = await axios.get(
-        "http://localhost:5000/api/leads",
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+    setLoading(true);
 
-      setLeads(response.data);
+    const response = await axios.get(
+      "http://localhost:5000/api/leads",
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    );
 
-    } catch (error) {
+    setLeads(response.data);
 
-      console.log(error);
+    setError("");
 
-    }
-  };
+  } catch (error) {
+
+    setError("Failed to fetch leads");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   useEffect(() => {
     fetchLeads();
@@ -173,6 +187,32 @@ function Leads() {
 
       </form>
 
+      {loading && (
+  <div className="bg-white p-6 rounded-2xl shadow mb-6">
+    Loading leads...
+  </div>
+)}
+
+{error && (
+  <div className="bg-red-100 text-red-600 p-4 rounded-2xl mb-6">
+    {error}
+  </div>
+)}
+
+<div className="mb-6">
+
+  <input
+    type="text"
+    placeholder="Search leads..."
+    value={search}
+    onChange={(e) =>
+      setSearch(e.target.value)
+    }
+    className="w-full bg-white p-4 rounded-2xl shadow border"
+  />
+
+</div>
+
       <div className="bg-white rounded-2xl shadow overflow-hidden">
 
         <table className="w-full">
@@ -203,7 +243,24 @@ function Leads() {
 
           <tbody>
 
-            {leads.map((lead) => (
+            {leads.length === 0 && !loading && (
+  <tr>
+    <td
+      colSpan="4"
+      className="text-center p-10 text-gray-500"
+    >
+      No leads found. Add your first lead.
+    </td>
+  </tr>
+)}
+
+            {leads
+  .filter((lead) =>
+    lead.clientName
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  )
+  .map((lead) => (
               <tr
                 key={lead._id}
                 className="border-b hover:bg-gray-50"
