@@ -25,8 +25,10 @@ function Dashboard() {
           </li>
 
           <li>
-            Pipeline
-          </li>
+  <Link to="/pipeline">
+    Pipeline
+  </Link>
+</li>
 
           <li>
             Reports
