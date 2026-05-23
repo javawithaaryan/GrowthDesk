@@ -219,9 +219,57 @@ function Leads() {
 
                 <td className="p-4">
 
-                  <span className="bg-gray-200 px-3 py-1 rounded-full text-sm">
-                    {lead.status}
-                  </span>
+                  <select
+  value={lead.status}
+  onChange={async (e) => {
+
+    try {
+
+      await axios.put(
+        `http://localhost:5000/api/leads/${lead._id}`,
+        {
+          status: e.target.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+
+      fetchLeads();
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+
+  }}
+  className="border px-3 py-2 rounded-lg"
+>
+
+  <option>
+    New Lead
+  </option>
+
+  <option>
+    Contacted
+  </option>
+
+  <option>
+    Quotation Sent
+  </option>
+
+  <option>
+    Negotiation
+  </option>
+
+  <option>
+    Closed Won
+  </option>
+
+</select>
 
                 </td>
 

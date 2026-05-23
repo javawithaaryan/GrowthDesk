@@ -38,8 +38,32 @@ const deleteLead = async (req, res) => {
   }
 };
 
+const updateLead = async (req, res) => {
+
+  try {
+
+    const lead = await Lead.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    res.json(lead);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+
 module.exports = {
   createLead,
   getLeads,
   deleteLead,
+  updateLead,
 };
