@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Leads from "./pages/Leads";
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/leads"
+  element={
+    <ProtectedRoute>
+      <Leads />
+    </ProtectedRoute>
+  }
+/>
 
       </Routes>
     </BrowserRouter>
