@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import MainLayout from "../layouts/MainLayout";
+
 function Leads() {
+
   const [leads, setLeads] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -12,11 +15,15 @@ function Leads() {
   });
 
   const fetchLeads = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/api/leads"
-    );
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/leads"
+      );
 
-    setLeads(response.data);
+      setLeads(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -33,40 +40,63 @@ function Leads() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(
-      "http://localhost:5000/api/leads",
-      formData
-    );
+    try {
+      await axios.post(
+        "http://localhost:5000/api/leads",
+        formData
+      );
 
-    setFormData({
-      clientName: "",
-      company: "",
-      email: "",
-      phone: "",
-    });
+      setFormData({
+        clientName: "",
+        company: "",
+        email: "",
+        phone: "",
+      });
 
-    fetchLeads();
+      fetchLeads();
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deleteLead = async (id) => {
-    await axios.delete(
-      `http://localhost:5000/api/leads/${id}`
-    );
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/leads/${id}`
+      );
 
-    fetchLeads();
+      fetchLeads();
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <MainLayout>
 
-      <h1 className="text-3xl font-bold mb-8">
-        Lead Management
-      </h1>
+      <div className="flex justify-between items-center mb-8">
+
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            Lead Management
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Manage client leads and sales opportunities.
+          </p>
+
+        </div>
+
+      </div>
 
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-2xl shadow mb-8 grid grid-cols-2 gap-4"
       >
+
         <input
           type="text"
           name="clientName"
@@ -103,9 +133,10 @@ function Leads() {
           className="border p-3 rounded-lg"
         />
 
-        <button className="bg-black text-white p-3 rounded-lg col-span-2">
+        <button className="bg-black text-white p-3 rounded-lg col-span-2 hover:bg-gray-800 transition">
           Add Lead
         </button>
+
       </form>
 
       <div className="bg-white rounded-2xl shadow overflow-hidden">
@@ -113,20 +144,37 @@ function Leads() {
         <table className="w-full">
 
           <thead className="bg-black text-white">
+
             <tr>
-              <th className="p-4 text-left">Client</th>
-              <th className="p-4 text-left">Company</th>
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-left">Action</th>
+
+              <th className="p-4 text-left">
+                Client
+              </th>
+
+              <th className="p-4 text-left">
+                Company
+              </th>
+
+              <th className="p-4 text-left">
+                Status
+              </th>
+
+              <th className="p-4 text-left">
+                Action
+              </th>
+
             </tr>
+
           </thead>
 
           <tbody>
+
             {leads.map((lead) => (
               <tr
                 key={lead._id}
-                className="border-b"
+                className="border-b hover:bg-gray-50"
               >
+
                 <td className="p-4">
                   {lead.clientName}
                 </td>
@@ -136,29 +184,34 @@ function Leads() {
                 </td>
 
                 <td className="p-4">
-                  {lead.status}
+                  <span className="bg-gray-200 px-3 py-1 rounded-full text-sm">
+                    {lead.status}
+                  </span>
                 </td>
 
                 <td className="p-4">
+
                   <button
                     onClick={() =>
                       deleteLead(lead._id)
                     }
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                   >
                     Delete
                   </button>
+
                 </td>
 
               </tr>
             ))}
+
           </tbody>
 
         </table>
 
       </div>
 
-    </div>
+    </MainLayout>
   );
 }
 

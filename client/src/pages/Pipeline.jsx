@@ -1,3 +1,5 @@
+import MainLayout from "../layouts/MainLayout";
+
 function Pipeline() {
 
   const columns = [
@@ -28,11 +30,23 @@ function Pipeline() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <MainLayout>
 
-      <h1 className="text-3xl font-bold mb-8">
-        Sales Pipeline
-      </h1>
+      <div className="flex justify-between items-center mb-8">
+
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            Sales Pipeline
+          </h1>
+
+          <p className="text-gray-500 mt-2">
+            Track sales stages and client progress.
+          </p>
+
+        </div>
+
+      </div>
 
       <div className="grid grid-cols-5 gap-6">
 
@@ -51,8 +65,9 @@ function Pipeline() {
               {column.leads.map((lead, i) => (
                 <div
                   key={i}
-                  className="bg-gray-100 p-4 rounded-xl shadow-sm"
+                  className="bg-gray-100 p-4 rounded-xl shadow-sm hover:bg-gray-200 transition"
                 >
+
                   <p className="font-medium">
                     {lead}
                   </p>
@@ -60,6 +75,7 @@ function Pipeline() {
                   <p className="text-sm text-gray-500 mt-1">
                     Manufacturing Client
                   </p>
+
                 </div>
               ))}
 
@@ -70,7 +86,7 @@ function Pipeline() {
 
       </div>
 
-    </div>
+    </MainLayout>
   );
 }
 
