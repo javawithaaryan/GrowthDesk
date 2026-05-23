@@ -14,15 +14,29 @@ function Leads() {
     phone: "",
   });
 
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo")
+  );
+
   const fetchLeads = async () => {
+
     try {
+
       const response = await axios.get(
-        "http://localhost:5000/api/leads"
+        "http://localhost:5000/api/leads",
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
       );
 
       setLeads(response.data);
+
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
@@ -31,19 +45,28 @@ function Leads() {
   }, []);
 
   const handleChange = (e) => {
+
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
+
       await axios.post(
         "http://localhost:5000/api/leads",
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
       );
 
       setFormData({
@@ -56,20 +79,31 @@ function Leads() {
       fetchLeads();
 
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
   const deleteLead = async (id) => {
+
     try {
+
       await axios.delete(
-        `http://localhost:5000/api/leads/${id}`
+        `http://localhost:5000/api/leads/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
       );
 
       fetchLeads();
 
     } catch (error) {
+
       console.log(error);
+
     }
   };
 
@@ -184,9 +218,11 @@ function Leads() {
                 </td>
 
                 <td className="p-4">
+
                   <span className="bg-gray-200 px-3 py-1 rounded-full text-sm">
                     {lead.status}
                   </span>
+
                 </td>
 
                 <td className="p-4">

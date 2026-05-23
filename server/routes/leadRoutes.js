@@ -6,12 +6,16 @@ const {
   deleteLead,
 } = require("../controllers/leadController");
 
+const {
+  protect,
+} = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-router.post("/", createLead);
+router.post("/", protect, createLead);
 
-router.get("/", getLeads);
+router.get("/", protect, getLeads);
 
-router.delete("/:id", deleteLead);
+router.delete("/:id", protect, deleteLead);
 
 module.exports = router;
