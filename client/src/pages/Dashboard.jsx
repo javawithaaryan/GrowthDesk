@@ -1,11 +1,33 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Dashboard() {
+
+  const [stats, setStats] = useState({
+    totalLeads: 0,
+    activeDeals: 0,
+    closedDeals: 0,
+    revenue: "₹0",
+  });
+
+  const fetchStats = async () => {
+    const response = await axios.get(
+      "http://localhost:5000/api/dashboard"
+    );
+
+    setStats(response.data);
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 flex">
 
       <div className="w-64 bg-black text-white p-6">
-        
+
         <h1 className="text-2xl font-bold mb-10">
           GrowthDesk
         </h1>
@@ -25,10 +47,10 @@ function Dashboard() {
           </li>
 
           <li>
-  <Link to="/pipeline">
-    Pipeline
-  </Link>
-</li>
+            <Link to="/pipeline">
+              Pipeline
+            </Link>
+          </li>
 
           <li>
             Reports
@@ -41,19 +63,19 @@ function Dashboard() {
       <div className="flex-1 p-10">
 
         <h1 className="text-3xl font-bold mb-6">
-          Dashboard
+          Dashboard Overview
         </h1>
 
         <div className="grid grid-cols-4 gap-6">
 
           <div className="bg-white p-6 rounded-2xl shadow">
-            
+
             <h2 className="text-gray-500">
               Total Leads
             </h2>
 
             <p className="text-3xl font-bold mt-2">
-              128
+              {stats.totalLeads}
             </p>
 
           </div>
@@ -65,7 +87,7 @@ function Dashboard() {
             </h2>
 
             <p className="text-3xl font-bold mt-2">
-              42
+              {stats.activeDeals}
             </p>
 
           </div>
@@ -77,7 +99,7 @@ function Dashboard() {
             </h2>
 
             <p className="text-3xl font-bold mt-2">
-              19
+              {stats.closedDeals}
             </p>
 
           </div>
@@ -89,7 +111,7 @@ function Dashboard() {
             </h2>
 
             <p className="text-3xl font-bold mt-2">
-              ₹2.4L
+              {stats.revenue}
             </p>
 
           </div>

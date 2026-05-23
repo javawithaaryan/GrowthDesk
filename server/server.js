@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const leadRoutes = require("./routes/leadRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.send("GrowthDesk API Running");
