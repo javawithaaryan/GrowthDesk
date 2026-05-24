@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 import MainLayout from "../layouts/MainLayout";
 import SalesChart from "../components/SalesChart";
@@ -18,9 +18,7 @@ function Dashboard() {
 
     try {
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/dashboard`
-      );
+      const response = await api.get("/api/dashboard");
 
       setStats(response.data);
     } catch (error) {

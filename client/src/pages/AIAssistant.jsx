@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout";
@@ -32,10 +32,7 @@ function AIAssistant() {
     setResponse("");
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/ai/generate`,
-        { prompt, type: activeType }
-      );
+      const res = await api.post("/api/ai/generate", { prompt, type: activeType });
       setResponse(res.data.result);
       toast.success("AI response generated!");
     } catch (error) {

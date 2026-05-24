@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -15,14 +15,7 @@ function Pipeline() {
 
     try {
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/leads`,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+      const response = await api.get("/api/leads");
 
       setLeads(response.data);
 

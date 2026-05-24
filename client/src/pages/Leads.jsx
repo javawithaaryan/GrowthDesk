@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -30,14 +30,7 @@ function Leads() {
 
       setLoading(true);
 
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/leads`,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+      const response = await api.get("/api/leads");
 
       setLeads(response.data);
 
@@ -73,15 +66,7 @@ function Leads() {
 
     try {
 
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/leads`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+      await api.post("/api/leads", formData);
 
       setFormData({
         clientName: "",
@@ -103,14 +88,7 @@ function Leads() {
 
     try {
 
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/leads/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        }
-      );
+      await api.delete(`/api/leads/${id}`);
 
       fetchLeads();
 
@@ -290,17 +268,7 @@ function Leads() {
 
                         try {
 
-                          await axios.put(
-                            `${import.meta.env.VITE_API_URL}/api/leads/${lead._id}`,
-                            {
-                              status: e.target.value,
-                            },
-                            {
-                              headers: {
-                                Authorization: `Bearer ${userInfo.token}`,
-                              },
-                            }
-                          );
+                          await api.put(`/api/leads/${lead._id}`, { status: e.target.value });
 
                           fetchLeads();
 
