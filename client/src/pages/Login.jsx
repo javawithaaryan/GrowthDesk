@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { loginUser } from "../services/authService";
 
 function Login() {
@@ -30,7 +31,7 @@ function Login() {
 
       navigate("/dashboard");
     } catch (error) {
-      alert(
+      toast.error(
         error.response?.data?.message ||
         "Login Failed"
       );
