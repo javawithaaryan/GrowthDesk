@@ -10,12 +10,15 @@ import Leads from "./pages/Leads";
 import Pipeline from "./pages/Pipeline";
 import Reports from "./pages/Reports";
 import AIAssistant from "./pages/AIAssistant";
+import Settings from "./pages/Settings";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
-      <Routes>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Toaster position="top-right" />
+        <Routes>
 
         <Route
           path="/"
@@ -68,8 +71,18 @@ function App() {
   }
 />
 
+<Route
+  path="/settings"
+  element={
+    <ProtectedRoute>
+      <Settings />
+    </ProtectedRoute>
+  }
+/>
+
       </Routes>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

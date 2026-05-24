@@ -56,77 +56,77 @@ function AIAssistant() {
     <MainLayout>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold">AI Assistant</h1>
-          <p className="text-gray-500 mt-2">Generate emails, strategies, and negotiation tactics.</p>
+          <h1 className="text-4xl font-bold dark:text-white">Sales AI Workspace</h1>
+          <p className="text-gray-500 mt-2 dark:text-gray-400">Generate emails, sales strategies, and negotiation tactics.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 bg-white p-6 rounded-2xl shadow h-fit">
-          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+        <div className="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 h-fit">
+          <h2 className="text-xl font-bold mb-4 dark:text-white">Quick Actions</h2>
           <div className="flex flex-col gap-3">
             {quickActions.map((action, index) => (
               <button
                 key={index}
                 onClick={() => handleQuickAction(action)}
-                className={`p-3 text-left rounded-lg transition ${activeType === action.type ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200 text-black"}`}
+                className={`p-3 text-left rounded-xl transition font-medium ${activeType === action.type ? "bg-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-none" : "bg-gray-50 dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200"}`}
               >
                 {action.label}
               </button>
             ))}
             <button
                 onClick={() => {setPrompt(""); setActiveType("general");}}
-                className={`p-3 text-left rounded-lg transition ${activeType === "general" ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200 text-black"}`}
+                className={`p-3 text-left rounded-xl transition font-medium ${activeType === "general" ? "bg-indigo-600 text-white shadow-md shadow-indigo-200 dark:shadow-none" : "bg-gray-50 dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200"}`}
               >
                 General Question
               </button>
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow flex flex-col">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col">
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Type your prompt here or select a quick action..."
-            className="w-full border p-4 rounded-xl min-h-[150px] mb-4 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white p-4 rounded-xl min-h-[150px] mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
           ></textarea>
 
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition disabled:opacity-50 self-start"
+            className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 self-start shadow-sm"
           >
-            {loading ? "Generating..." : "Generate with AI"}
+            {loading ? "Generating Output..." : "Generate with AI"}
           </button>
 
           {response && (
-            <div className="mt-8 border-t pt-6 relative">
+            <div className="mt-8 border-t border-gray-100 dark:border-slate-700 pt-6 relative">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-lg">Response</h3>
+                <h3 className="font-bold text-lg dark:text-white">Workspace Response</h3>
                 <button
                   onClick={copyToClipboard}
-                  className="text-sm bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 transition"
+                  className="text-sm font-medium bg-gray-50 dark:bg-slate-700 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-600 hover:bg-gray-100 dark:hover:bg-slate-600 transition"
                 >
                   Copy Text
                 </button>
               </div>
-              <div className="bg-gray-50 p-4 rounded-xl whitespace-pre-wrap text-gray-800">
+              <div className="bg-indigo-50/50 dark:bg-slate-700/50 p-5 rounded-xl whitespace-pre-wrap text-gray-800 dark:text-gray-200 leading-relaxed border border-indigo-100 dark:border-slate-600">
                 {response}
               </div>
             </div>
           )}
           
           {history.length > 0 && (
-            <div className="mt-8 border-t pt-6">
-              <h3 className="font-bold text-lg mb-4 text-gray-600">Conversation History</h3>
+            <div className="mt-8 border-t border-gray-100 dark:border-slate-700 pt-6">
+              <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Recent Activity</h3>
               <div className="space-y-4">
                 {history.map((item, index) => (
-                  <div key={index} className="bg-white border rounded-xl p-4 shadow-sm">
-                    <div className="text-sm font-semibold text-gray-800 mb-1">
-                      <span className="uppercase text-[10px] bg-gray-200 px-2 py-0.5 rounded-full mr-2">{item.type}</span>
+                  <div key={index} className="bg-gray-50 dark:bg-slate-700/50 border border-gray-100 dark:border-slate-600 rounded-xl p-5 transition">
+                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
+                      <span className="uppercase text-[10px] bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 font-bold px-2 py-0.5 rounded-full mr-3">{item.type}</span>
                       {item.prompt}
                     </div>
-                    <div className="text-sm text-gray-600 line-clamp-3">
+                    <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed">
                       {item.response}
                     </div>
                   </div>
