@@ -31,7 +31,7 @@ function Leads() {
       setLoading(true);
 
       const response = await axios.get(
-        "http://localhost:5000/api/leads",
+        `${import.meta.env.VITE_API_URL}/api/leads`,
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -74,7 +74,7 @@ function Leads() {
     try {
 
       await axios.post(
-        "http://localhost:5000/api/leads",
+        `${import.meta.env.VITE_API_URL}/api/leads`,
         formData,
         {
           headers: {
@@ -104,7 +104,7 @@ function Leads() {
     try {
 
       await axios.delete(
-        `http://localhost:5000/api/leads/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/leads/${id}`,
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -284,7 +284,7 @@ function Leads() {
                         try {
 
                           await axios.put(
-                            `http://localhost:5000/api/leads/${lead._id}`,
+                            `${import.meta.env.VITE_API_URL}/api/leads/${lead._id}`,
                             {
                               status: e.target.value,
                             },
@@ -307,25 +307,11 @@ function Leads() {
                       className="border px-3 py-2 rounded-lg"
                     >
 
-                      <option>
-                        New Lead
-                      </option>
-
-                      <option>
-                        Contacted
-                      </option>
-
-                      <option>
-                        Quotation Sent
-                      </option>
-
-                      <option>
-                        Negotiation
-                      </option>
-
-                      <option>
-                        Closed Won
-                      </option>
+                      <option>New Lead</option>
+                      <option>Contacted</option>
+                      <option>Quotation Sent</option>
+                      <option>Negotiation</option>
+                      <option>Closed Won</option>
 
                     </select>
 

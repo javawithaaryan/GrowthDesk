@@ -16,7 +16,7 @@ function Pipeline() {
     try {
 
       const response = await axios.get(
-        "http://localhost:5000/api/leads",
+        `${import.meta.env.VITE_API_URL}/api/leads`,
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
