@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -18,6 +19,15 @@ function Leads() {
     company: "",
     email: "",
     phone: "",
+  });
+
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    company: "",
+    email: "",
+    phone: "",
+    status: "",
   });
 
   const userInfo = JSON.parse(
@@ -89,13 +99,43 @@ function Leads() {
     try {
 
       await api.delete(`/api/leads/${id}`);
-
+      toast.success("Lead deleted");
       fetchLeads();
-
     } catch (error) {
+      toast.error("Failed to delete lead");
+    }
+  };
 
-      console.log(error);
+  const handleOpenModal = (lead) => {
+    setSelectedLead(lead);
+    setEditFormData({
+      company: lead.company,
+      email: lead.email,
+      phone: lead.phone,
+      status: lead.status,
+    });
+  };
 
+  const handleCloseModal = () => {
+    setSelectedLead(null);
+  };
+
+  const handleEditChange = (e) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setEditLoading(true);
+      await api.put(`/api/leads/${selectedLead._id}`, editFormData);
+      toast.success("Lead updated successfully");
+      fetchLeads();
+      handleCloseModal();
+    } catch (error) {
+      toast.error("Failed to update lead");
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -249,7 +289,8 @@ function Leads() {
 
                 <tr
                   key={lead._id}
-                  className="border-b hover:bg-gray-50"
+                  className="border-b hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleOpenModal(lead)}
                 >
 
                   <td className="p-4">
@@ -264,18 +305,14 @@ function Leads() {
 
                     <select
                       value={lead.status}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={async (e) => {
-
                         try {
-
                           await api.put(`/api/leads/${lead._id}`, { status: e.target.value });
-
+                          toast.success("Status updated");
                           fetchLeads();
-
                         } catch (error) {
-
-                          console.log(error);
-
+                          toast.error("Failed to update status");
                         }
 
                       }}
@@ -295,9 +332,10 @@ function Leads() {
                   <td className="p-4">
 
                     <button
-                      onClick={() =>
-                        deleteLead(lead._id)
-                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteLead(lead._id);
+                      }}
                       className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
                     >
                       Delete
@@ -314,6 +352,46 @@ function Leads() {
         </table>
 
       </div>
+
+      {selectedLead && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg relative animate-in fade-in zoom-in duration-200">
+            <button onClick={handleCloseModal} className="absolute top-4 right-4 text-gray-500 hover:text-black">
+              ✕
+            </button>
+            <h2 className="text-2xl font-bold mb-1">{selectedLead.clientName}</h2>
+            <p className="text-sm text-gray-500 mb-6">Added on: {new Date(selectedLead.createdAt).toLocaleDateString()}</p>
+            
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                <input type="text" name="company" value={editFormData.company} onChange={handleEditChange} className="w-full border p-3 rounded-lg" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" value={editFormData.email} onChange={handleEditChange} className="w-full border p-3 rounded-lg" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input type="text" name="phone" value={editFormData.phone} onChange={handleEditChange} className="w-full border p-3 rounded-lg" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" value={editFormData.status} onChange={handleEditChange} className="w-full border p-3 rounded-lg">
+                  <option>New Lead</option>
+                  <option>Contacted</option>
+                  <option>Quotation Sent</option>
+                  <option>Negotiation</option>
+                  <option>Closed Won</option>
+                </select>
+              </div>
+              <button disabled={editLoading} className="w-full bg-black text-white p-3 rounded-lg hover:bg-gray-800 transition disabled:opacity-50 mt-4">
+                {editLoading ? "Saving..." : "Save Changes"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
     </MainLayout>
   );
