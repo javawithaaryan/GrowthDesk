@@ -13,22 +13,20 @@ function Dashboard() {
     revenue: "₹0",
   });
   const [loading, setLoading] = useState(true);
+  const [recentLeads, setRecentLeads] = useState([]);
 
   const fetchStats = async () => {
-
     try {
-
-      const response = await api.get("/api/dashboard");
-
-      setStats(response.data);
+      const [statsRes, leadsRes] = await Promise.all([
+        api.get("/api/dashboard"),
+        api.get("/api/leads")
+      ]);
+      setStats(statsRes.data);
+      setRecentLeads(leadsRes.data.slice(0, 5));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
-    }
-
-      console.log(error);
-
     }
   };
 
@@ -91,8 +89,37 @@ function Dashboard() {
         </div>
       )}
 
-      <div className="mt-10">
-        <SalesChart />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+        <div className="lg:col-span-2">
+          <SalesChart />
+        </div>
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-xl font-bold mb-4">Recent Leads</h2>
+          {loading ? (
+             <div className="space-y-4">
+               {[...Array(4)].map((_, i) => (
+                 <div key={i} className="animate-pulse flex flex-col gap-2 border-b pb-3">
+                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                   <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                 </div>
+               ))}
+             </div>
+          ) : recentLeads.length > 0 ? (
+            <div className="space-y-4">
+              {recentLeads.map((lead) => (
+                <div key={lead._id} className="border-b pb-3 last:border-0 last:pb-0">
+                  <p className="font-semibold text-gray-800">{lead.clientName}</p>
+                  <div className="flex justify-between items-center mt-1">
+                    <span className="text-sm text-gray-500">{lead.company}</span>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{lead.status}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No recent leads found.</p>
+          )}
+        </div>
       </div>
 
     </MainLayout>
