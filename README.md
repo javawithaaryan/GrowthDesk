@@ -4,8 +4,6 @@
   <br/>
   <br/>
 
-# GrowthDesk CRM
-
 ### An AI-assisted CRM workspace built for modern B2B sales teams
 
   <br/>
@@ -244,4 +242,4 @@ A few things I'd build out if I continued this project:
 
 ---
 
-*Built by [Aaryan](https://github.com/javawithaaryan) as a full-stack project to explore AI-assisted SaaS workflows.*
+*Built by [Aryan](https://github.com/javawithaaryan) as a full-stack project to explore AI-assisted SaaS workflows.*
