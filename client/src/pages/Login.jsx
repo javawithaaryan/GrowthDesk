@@ -116,19 +116,13 @@ function Login() {
       <div className="hidden lg:flex flex-col justify-between w-1/2 p-14 relative z-10">
 
         {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <img
-            src={logoDark}
-            alt="GrowthDesk"
-            className="h-8 object-contain object-left"
-            style={{ maxWidth: "180px" }}
-            draggable={false}
-          />
-        </motion.div>
+        <img
+          src={logoDark}
+          alt="GrowthDesk"
+          className="absolute top-10 left-10 h-11 md:h-12 object-contain opacity-0 animate-fadeIn"
+          style={{ maxWidth: "180px" }}
+          draggable={false}
+        />
 
         {/* Testimonial */}
         <motion.div
@@ -188,7 +182,7 @@ function Login() {
             <img
               src={logoDark}
               alt="GrowthDesk"
-              className="h-8 object-contain"
+              className="h-11 md:h-12 object-contain opacity-0 animate-fadeIn"
               draggable={false}
             />
           </div>
