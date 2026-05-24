@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { registerUser } from "../services/authService";
 import { motion } from "framer-motion";
+import logoDark from "../assets/logo/logo-dark.png";
 
 function Register() {
   const navigate = useNavigate();
@@ -28,18 +29,54 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)" }}>
+    <div
+      className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
+      style={{ background: "#08090d" }}
+    >
+      {/* Ambient blob */}
+      <motion.div
+        animate={{ opacity: [0.15, 0.22, 0.15], scale: [1, 1.06, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "absolute",
+          top: "-100px",
+          right: "-80px",
+          width: "400px",
+          height: "400px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, #4f46e5 0%, transparent 68%)",
+          filter: "blur(70px)",
+          pointerEvents: "none",
+        }}
+      />
+      <motion.div
+        animate={{ opacity: [0.08, 0.14, 0.08] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        style={{
+          position: "absolute",
+          bottom: "-60px",
+          left: "-60px",
+          width: "320px",
+          height: "320px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, #7c3aed 0%, transparent 68%)",
+          filter: "blur(80px)",
+          pointerEvents: "none",
+        }}
+      />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
-        className="w-full max-w-sm"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-sm relative z-10"
       >
-        <div className="flex items-center gap-2 mb-8 justify-center">
-          <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">G</span>
-          </div>
-          <span className="text-white font-bold text-xl">GrowthDesk</span>
+        <div className="flex justify-center mb-8">
+          <img
+            src={logoDark}
+            alt="GrowthDesk"
+            className="h-8 object-contain"
+            draggable={false}
+          />
         </div>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
