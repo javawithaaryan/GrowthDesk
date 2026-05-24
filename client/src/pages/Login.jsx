@@ -116,44 +116,34 @@ function Login() {
       <div className="hidden lg:flex flex-col justify-between w-1/2 p-14 relative z-10">
 
         {/* Logo */}
-        <img
-          src={logoDark}
-          alt="GrowthDesk"
-          className="absolute top-10 left-10 h-11 md:h-12 object-contain opacity-0 animate-fadeIn"
-          style={{ maxWidth: "180px" }}
-          draggable={false}
-        />
+        <div className="mb-16 -mt-2 -ml-2">
+          <img
+            src={logoDark}
+            alt="GrowthDesk"
+            className="h-12 md:h-14 object-contain object-left opacity-0 animate-fadeIn"
+            style={{ maxWidth: "200px" }}
+            draggable={false}
+          />
+        </div>
 
-        {/* Testimonial */}
+        {/* Trust Message */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
         >
-          <blockquote
-            className="text-lg leading-relaxed max-w-md"
+          <h2
+            className="text-2xl md:text-3xl font-semibold leading-snug max-w-md mb-4"
+            style={{ color: "rgba(255,255,255,0.9)" }}
+          >
+            Built for modern client workflows
+          </h2>
+          <p
+            className="text-base leading-relaxed max-w-sm"
             style={{ color: "rgba(255,255,255,0.5)" }}
           >
-            "The CRM that actually understands how manufacturing sales teams
-            work. Our pipeline conversion went up 34% in the first quarter."
-          </blockquote>
-
-          <div className="flex items-center gap-3 mt-7">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-              style={{ background: "rgba(99,102,241,0.25)", border: "1px solid rgba(99,102,241,0.3)" }}
-            >
-              RS
-            </div>
-            <div>
-              <p className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.85)" }}>
-                Rahul Sharma
-              </p>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-                Head of Sales, Skyline Manufacturing
-              </p>
-            </div>
-          </div>
+            Trusted by growing sales teams to organize pipelines, track deals, and close faster with confidence.
+          </p>
         </motion.div>
 
         {/* Footer line — no AI marketing */}
