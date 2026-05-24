@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Leads from "./pages/Leads";
 import Pipeline from "./pages/Pipeline";
 import Reports from "./pages/Reports";
+import AIAssistant from "./pages/AIAssistant";
 
 function App() {
   return (
@@ -55,6 +56,14 @@ function App() {
   element={
     <ProtectedRoute>
       <Reports />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/ai-assistant"
+  element={
+    <ProtectedRoute>
+      <AIAssistant />
     </ProtectedRoute>
   }
 />

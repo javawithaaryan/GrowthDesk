@@ -61,6 +61,15 @@ function MainLayout({ children }) {
               </Link>
             </li>
 
+            <li>
+              <Link
+                to="/ai-assistant"
+                className="hover:text-gray-300 transition flex items-center gap-2 text-indigo-300 font-semibold"
+              >
+                ✦ AI Assistant
+              </Link>
+            </li>
+
           </ul>
 
         </div>
