@@ -9,6 +9,7 @@ function AIAssistant() {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeType, setActiveType] = useState("general");
+  const [history, setHistory] = useState([]);
 
   const quickActions = [
     { label: "Generate Follow-Up", type: "follow-up", sample: "Draft a follow-up email for a client who asked for a quote last week." },
@@ -33,7 +34,9 @@ function AIAssistant() {
 
     try {
       const res = await api.post("/api/ai/generate", { prompt, type: activeType });
-      setResponse(res.data.result);
+      const generatedText = res.data.result;
+      setResponse(generatedText);
+      setHistory([{ prompt, response: generatedText, type: activeType }, ...history]);
       toast.success("AI response generated!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to generate AI response.");
@@ -109,6 +112,25 @@ function AIAssistant() {
               </div>
               <div className="bg-gray-50 p-4 rounded-xl whitespace-pre-wrap text-gray-800">
                 {response}
+              </div>
+            </div>
+          )}
+          
+          {history.length > 0 && (
+            <div className="mt-8 border-t pt-6">
+              <h3 className="font-bold text-lg mb-4 text-gray-600">Conversation History</h3>
+              <div className="space-y-4">
+                {history.map((item, index) => (
+                  <div key={index} className="bg-white border rounded-xl p-4 shadow-sm">
+                    <div className="text-sm font-semibold text-gray-800 mb-1">
+                      <span className="uppercase text-[10px] bg-gray-200 px-2 py-0.5 rounded-full mr-2">{item.type}</span>
+                      {item.prompt}
+                    </div>
+                    <div className="text-sm text-gray-600 line-clamp-3">
+                      {item.response}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

@@ -1,4 +1,6 @@
 import MainLayout from "../layouts/MainLayout";
+import SalesChart from "../components/SalesChart";
+import ConversionChart from "../components/ConversionChart";
 
 function Reports() {
 
@@ -99,6 +101,11 @@ function Reports() {
 
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <SalesChart />
+        <ConversionChart />
+      </div>
+
       <div className="bg-white rounded-2xl shadow overflow-hidden">
 
         <div className="p-6 border-b">
@@ -157,9 +164,7 @@ function Reports() {
             ))}
 
           </tbody>
-
         </table>
-
       </div>
 
     </MainLayout>
