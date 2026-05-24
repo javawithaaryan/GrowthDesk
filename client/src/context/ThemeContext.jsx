@@ -4,20 +4,19 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      return savedTheme === "dark";
-    }
+    const saved = localStorage.getItem("gd-theme");
+    if (saved) return saved === "dark";
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
+    const root = document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      root.classList.add("dark");
+      localStorage.setItem("gd-theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      root.classList.remove("dark");
+      localStorage.setItem("gd-theme", "light");
     }
   }, [isDarkMode]);
 

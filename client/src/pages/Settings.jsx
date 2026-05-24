@@ -1,179 +1,289 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { FiUser, FiMail, FiBriefcase, FiShield, FiZap, FiSun, FiMoon, FiCheck } from "react-icons/fi";
 import MainLayout from "../layouts/MainLayout";
 import { useTheme } from "../context/ThemeContext";
 
+function getUserInfo() {
+  try { return JSON.parse(localStorage.getItem("userInfo")) || {}; } catch { return {}; }
+}
+
+function getInitials(name) {
+  if (!name) return "U";
+  return name.split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase();
+}
+
 function Settings() {
   const { isDarkMode, toggleTheme } = useTheme();
-  
+  const rawUser = getUserInfo();
+
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john@growthdesk.io",
-    role: "Sales Executive"
+    name: rawUser?.name || rawUser?.email?.split("@")[0] || "",
+    email: rawUser?.email || "",
+    role: rawUser?.role || "Sales Executive",
   });
 
-  const [aiPreferences, setAiPreferences] = useState({
+  const [saved, setSaved] = useState(false);
+
+  const [aiPrefs, setAiPrefs] = useState({
     autoFollowUp: true,
-    tone: "Professional"
+    tone: "Professional",
+    suggestions: true,
   });
+
+  const initials = getInitials(profile.name);
+
+  const saveProfile = () => {
+    // Persist display name locally
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      userInfo.name = profile.name;
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    } catch {}
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
 
   return (
     <MainLayout>
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold dark:text-white">Account Settings</h1>
-        <p className="text-gray-500 mt-2 dark:text-gray-400">Manage your profile, application preferences, and AI features.</p>
+      {/* Header */}
+      <div className="mb-7">
+        <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Account Settings</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
+          Manage your profile, appearance, and AI workspace preferences.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Profile Card */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h2 className="text-xl font-bold mb-6 dark:text-white">Profile Information</h2>
-            
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 rounded-full flex items-center justify-center text-2xl font-bold">
-                {profile.name.split(" ").map(n => n[0]).join("")}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        {/* Left — Profile + Security */}
+        <div className="lg:col-span-2 space-y-5">
+
+          {/* Profile Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="card p-6"
+          >
+            <h2 className="font-bold text-base mb-6" style={{ color: "var(--text-primary)" }}>Profile Information</h2>
+
+            <div className="flex items-center gap-5 mb-7">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold flex-shrink-0 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/40">
+                {initials}
               </div>
               <div>
-                <button className="bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-slate-600 transition dark:text-white">
-                  Change Avatar
-                </button>
+                <p className="font-bold text-base" style={{ color: "var(--text-primary)" }}>{profile.name || "Your Name"}</p>
+                <p className="text-sm" style={{ color: "var(--text-muted)" }}>{profile.email}</p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <div className="online-dot w-1.5 h-1.5"></div>
+                  <span className="text-xs" style={{ color: "var(--text-muted)" }}>Active · GrowthDesk CRM</span>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                  <input 
-                    type="text" 
-                    value={profile.name}
-                    onChange={(e) => setProfile({...profile, name: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                  <input 
-                    type="email" 
-                    value={profile.email}
-                    onChange={(e) => setProfile({...profile, email: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-                  />
-                </div>
-              </div>
-              
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role (Frontend Mockup)</label>
-                <input 
-                  type="text" 
+                <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>
+                  <FiUser size={11} /> Full Name
+                </label>
+                <input
+                  type="text"
+                  value={profile.name}
+                  onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                  className="input-field"
+                  placeholder="Your full name"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>
+                  <FiMail size={11} /> Email Address
+                </label>
+                <input
+                  type="email"
+                  value={profile.email}
+                  onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                  className="input-field"
+                  placeholder="your@email.com"
+                />
+              </div>
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>
+                  <FiBriefcase size={11} /> Role
+                </label>
+                <input
+                  type="text"
                   value={profile.role}
                   disabled
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl bg-gray-50 dark:bg-slate-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                  className="input-field opacity-50 cursor-not-allowed"
                 />
+                <p className="text-[11px] mt-1.5" style={{ color: "var(--text-muted)" }}>Contact your admin to update your role.</p>
               </div>
             </div>
 
-            <div className="mt-8">
-              <button className="bg-black dark:bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-gray-800 dark:hover:bg-indigo-700 transition">
-                Save Changes
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h2 className="text-xl font-bold mb-6 dark:text-white">Security</h2>
-            <div className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
-                <input 
-                  type="password" 
-                  placeholder="••••••••"
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-                  <input 
-                    type="password" 
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
-                  <input 
-                    type="password" 
-                    className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white"
-                  />
-                </div>
-              </div>
-            </div>
             <div className="mt-6">
-              <button className="bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-slate-600 transition">
-                Update Password
+              <button onClick={saveProfile} className="btn-primary">
+                {saved ? <><FiCheck size={14} /> Saved!</> : "Save Changes"}
               </button>
             </div>
-          </div>
+          </motion.div>
 
+          {/* Security Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="card p-6"
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <FiShield size={16} className="text-indigo-500" />
+              <h2 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>Security</h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                { label: "Current Password", placeholder: "••••••••", type: "password" },
+                { label: "New Password", placeholder: "Min 8 characters", type: "password" },
+                { label: "Confirm New Password", placeholder: "Repeat new password", type: "password" },
+              ].map(({ label, placeholder, type }) => (
+                <div key={label}>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>{label}</label>
+                  <input type={type} placeholder={placeholder} className="input-field" />
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <button className="btn-secondary">Update Password</button>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Preferences */}
-        <div className="space-y-8">
-          
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h2 className="text-xl font-bold mb-6 dark:text-white">Application</h2>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold dark:text-white">Dark Mode</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Toggle dark theme</p>
+        {/* Right — Preferences */}
+        <div className="space-y-5">
+
+          {/* Appearance */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.05 }}
+            className="card p-6"
+          >
+            <h2 className="font-bold text-base mb-5" style={{ color: "var(--text-primary)" }}>Appearance</h2>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2">
+                {isDarkMode ? <FiMoon size={15} className="text-indigo-400" /> : <FiSun size={15} className="text-amber-500" />}
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                    {isDarkMode ? "Dark Mode" : "Light Mode"}
+                  </p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>Saved to your browser</p>
+                </div>
               </div>
-              <button 
+              <button
                 onClick={toggleTheme}
-                className={`w-12 h-6 rounded-full transition-colors relative ${isDarkMode ? 'bg-indigo-500' : 'bg-gray-300'}`}
+                className="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
+                style={{ backgroundColor: isDarkMode ? "var(--accent)" : "#d1d5db" }}
               >
-                <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${isDarkMode ? 'translate-x-6' : 'translate-x-0.5'}`}></div>
+                <span
+                  className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+                  style={{ transform: isDarkMode ? "translateX(22px)" : "translateX(2px)" }}
+                />
               </button>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
-            <h2 className="text-xl font-bold mb-6 dark:text-white">AI Assistant</h2>
-            
-            <div className="space-y-6">
+          {/* AI Preferences */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.15 }}
+            className="card p-6"
+          >
+            <div className="flex items-center gap-2 mb-5">
+              <FiZap size={15} className="text-indigo-500" />
+              <h2 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>AI Workspace</h2>
+            </div>
+
+            <div className="space-y-5">
+              {/* Toggle: Auto Follow-up */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-semibold dark:text-white">Auto-draft Follow-ups</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Gemini analyzes lead status changes</p>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Auto-draft Follow-ups</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Gemini analyses lead changes</p>
                 </div>
-                <button 
-                  onClick={() => setAiPreferences({...aiPreferences, autoFollowUp: !aiPreferences.autoFollowUp})}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${aiPreferences.autoFollowUp ? 'bg-indigo-500' : 'bg-gray-300'}`}
+                <button
+                  onClick={() => setAiPrefs({ ...aiPrefs, autoFollowUp: !aiPrefs.autoFollowUp })}
+                  className="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
+                  style={{ backgroundColor: aiPrefs.autoFollowUp ? "var(--accent)" : "#d1d5db" }}
                 >
-                  <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 transition-transform ${aiPreferences.autoFollowUp ? 'translate-x-6' : 'translate-x-0.5'}`}></div>
+                  <span
+                    className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+                    style={{ transform: aiPrefs.autoFollowUp ? "translateX(22px)" : "translateX(2px)" }}
+                  />
                 </button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Default AI Tone</label>
-                <select 
-                  value={aiPreferences.tone}
-                  onChange={(e) => setAiPreferences({...aiPreferences, tone: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white"
+              {/* Toggle: Smart suggestions */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Smart Suggestions</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Context-aware prompts in pipeline</p>
+                </div>
+                <button
+                  onClick={() => setAiPrefs({ ...aiPrefs, suggestions: !aiPrefs.suggestions })}
+                  className="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
+                  style={{ backgroundColor: aiPrefs.suggestions ? "var(--accent)" : "#d1d5db" }}
                 >
-                  <option>Professional</option>
-                  <option>Friendly</option>
-                  <option>Persuasive</option>
-                  <option>Urgent</option>
+                  <span
+                    className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+                    style={{ transform: aiPrefs.suggestions ? "translateX(22px)" : "translateX(2px)" }}
+                  />
+                </button>
+              </div>
+
+              {/* Tone Selector */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>
+                  Default Writing Tone
+                </label>
+                <select
+                  value={aiPrefs.tone}
+                  onChange={(e) => setAiPrefs({ ...aiPrefs, tone: e.target.value })}
+                  className="input-field"
+                >
+                  {["Professional", "Friendly", "Persuasive", "Concise", "Urgent"].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
                 </select>
               </div>
             </div>
+          </motion.div>
 
-          </div>
-
+          {/* Account Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.2 }}
+            className="card p-6"
+          >
+            <h2 className="font-bold text-base mb-4" style={{ color: "var(--text-primary)" }}>Account</h2>
+            <div className="space-y-2.5 text-sm">
+              {[
+                { label: "Plan", value: "Starter" },
+                { label: "Members", value: "3 seats" },
+                { label: "AI Requests", value: "∞ / month" },
+                { label: "Version", value: "v1.2.0" },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between">
+                  <span style={{ color: "var(--text-muted)" }}>{label}</span>
+                  <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
-
       </div>
     </MainLayout>
   );

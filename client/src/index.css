@@ -1,10 +1,411 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 transition-colors duration-200 ease-in-out;
+  :root {
+    --surface: #f8f9fb;
+    --surface-card: #ffffff;
+    --surface-sidebar: #0a0a0a;
+    --border: #e5e7eb;
+    --text-primary: #111827;
+    --text-muted: #6b7280;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
   }
-  .dark body {
-    @apply bg-slate-900 text-gray-100;
+
+  .dark {
+    --surface: #0d1117;
+    --surface-card: #161b22;
+    --surface-sidebar: #090d13;
+    --border: #21262d;
+    --text-primary: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #818cf8;
+    --accent-hover: #6366f1;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background-color 250ms ease, color 250ms ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ==========================================
+   CARD SURFACES
+   ========================================== */
+.card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: background-color 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.dark .card:hover {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================
+   SHIMMER / SKELETON LOADER
+   ========================================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #1e2430 25%,
+    #252d3b 50%,
+    #1e2430 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ==========================================
+   PAGE FADE-IN
+   ========================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeInUp 350ms ease forwards;
+}
+
+/* ==========================================
+   SIDEBAR
+   ========================================== */
+.sidebar {
+  background-color: var(--surface-sidebar);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 250ms ease;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 200ms ease, background-color 200ms ease;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.sidebar-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sidebar-link.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-link.active-ai {
+  color: #a5b4fc;
+  background-color: rgba(99, 102, 241, 0.15);
+}
+
+.sidebar-link.active-ai:hover {
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+/* ==========================================
+   BUTTONS
+   ========================================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background-color: #111827;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+}
+
+.btn-primary:hover {
+  background-color: #1f2937;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.dark .btn-primary {
+  background-color: #6366f1;
+}
+
+.dark .btn-primary:hover {
+  background-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface);
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   FORM INPUTS
+   ========================================== */
+.input-field {
+  width: 100%;
+  padding: 11px 16px;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--surface-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+/* ==========================================
+   STATUS BADGES
+   ========================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   TABLE
+   ========================================== */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 150ms ease;
+}
+
+.data-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.dark .data-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.data-table td {
+  padding: 14px 16px;
+  color: var(--text-primary);
+}
+
+/* ==========================================
+   STAT CARDS (lift on hover)
+   ========================================== */
+.stat-card {
+  padding: 24px;
+  border-radius: 14px;
+  background-color: var(--surface-card);
+  border: 1px solid var(--border);
+  transition: box-shadow 250ms ease, transform 250ms ease, background-color 250ms ease, border-color 250ms ease;
+  cursor: default;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+}
+
+.dark .stat-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   ONLINE INDICATOR PULSE
+   ========================================== */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ==========================================
+   CHART CONTAINERS
+   ========================================== */
+.chart-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  transition: background-color 250ms ease, border-color 250ms ease;
+}
+
+/* ==========================================
+   SCROLLBAR
+   ========================================== */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+
+/* ==========================================
+   HEADER NAV
+   ========================================== */
+.top-header {
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--border);
+  transition: background-color 250ms ease, border-color 250ms ease;
+}
+
+/* ==========================================
+   MODAL OVERLAY
+   ========================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-content {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  padding: 32px;
+  position: relative;
+  transition: background-color 250ms ease, border-color 250ms ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.dark .modal-content {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   RESPONSIVE SIDEBAR
+   ========================================== */
+@media (max-width: 768px) {
+  .sidebar-wrapper {
+    position: fixed;
+    left: -100%;
+    z-index: 40;
+    transition: left 300ms ease;
+    height: 100vh;
+  }
+
+  .sidebar-wrapper.open {
+    left: 0;
   }
 }

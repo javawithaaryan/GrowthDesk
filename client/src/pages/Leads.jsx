@@ -1,125 +1,72 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../services/api";
 import toast from "react-hot-toast";
-
 import MainLayout from "../layouts/MainLayout";
+import { FiDownload, FiPlus, FiSearch, FiX, FiEdit2, FiTrash2 } from "react-icons/fi";
+
+const STATUS_COLORS = {
+  "New Lead":       { bg: "rgba(59,130,246,0.1)",  text: "#3b82f6" },
+  "Contacted":      { bg: "rgba(168,85,247,0.1)",  text: "#a855f7" },
+  "Quotation Sent": { bg: "rgba(234,179,8,0.1)",   text: "#ca8a04" },
+  "Negotiation":    { bg: "rgba(249,115,22,0.1)",  text: "#ea580c" },
+  "Closed Won":     { bg: "rgba(34,197,94,0.1)",   text: "#16a34a" },
+};
 
 function Leads() {
-
   const [leads, setLeads] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
-
   const [search, setSearch] = useState("");
-
-  const [formData, setFormData] = useState({
-    clientName: "",
-    company: "",
-    email: "",
-    phone: "",
-  });
-
+  const [formData, setFormData] = useState({ clientName: "", company: "", email: "", phone: "" });
   const [selectedLead, setSelectedLead] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    company: "",
-    email: "",
-    phone: "",
-    status: "",
-  });
-
-  const userInfo = JSON.parse(
-    localStorage.getItem("userInfo")
-  );
+  const [editFormData, setEditFormData] = useState({ company: "", email: "", phone: "", status: "" });
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const fetchLeads = async () => {
-
     try {
-
       setLoading(true);
-
       const response = await api.get("/api/leads");
-
       setLeads(response.data);
-
       setError("");
-
-    } catch (error) {
-
-      setError("Failed to fetch leads");
-
+    } catch {
+      setError("Couldn't load your leads. Check your connection.");
     } finally {
-
       setLoading(false);
-
     }
   };
 
-  useEffect(() => {
-    fetchLeads();
-  }, []);
+  useEffect(() => { fetchLeads(); }, []);
 
-  const handleChange = (e) => {
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
     try {
-
       await api.post("/api/leads", formData);
-
-      setFormData({
-        clientName: "",
-        company: "",
-        email: "",
-        phone: "",
-      });
-
+      setFormData({ clientName: "", company: "", email: "", phone: "" });
+      setShowAddForm(false);
+      toast.success("Lead added to your pipeline.");
       fetchLeads();
-
-    } catch (error) {
-      toast.error("Failed to add lead");
+    } catch {
+      toast.error("Failed to add lead. Please try again.");
     }
   };
 
   const deleteLead = async (id) => {
-
     try {
-
       await api.delete(`/api/leads/${id}`);
-      toast.success("Lead deleted");
+      toast.success("Lead removed.");
       fetchLeads();
-    } catch (error) {
-      toast.error("Failed to delete lead");
+    } catch {
+      toast.error("Failed to remove lead.");
     }
   };
 
   const handleOpenModal = (lead) => {
     setSelectedLead(lead);
-    setEditFormData({
-      company: lead.company,
-      email: lead.email,
-      phone: lead.phone,
-      status: lead.status,
-    });
-  };
-
-  const handleCloseModal = () => {
-    setSelectedLead(null);
-  };
-
-  const handleEditChange = (e) => {
-    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+    setEditFormData({ company: lead.company, email: lead.email, phone: lead.phone, status: lead.status });
   };
 
   const handleEditSubmit = async (e) => {
@@ -127,307 +74,295 @@ function Leads() {
     try {
       setEditLoading(true);
       await api.put(`/api/leads/${selectedLead._id}`, editFormData);
-      toast.success("Lead updated successfully");
+      toast.success("Lead updated.");
       fetchLeads();
-      handleCloseModal();
-    } catch (error) {
-      toast.error("Failed to update lead");
+      setSelectedLead(null);
+    } catch {
+      toast.error("Failed to update lead.");
     } finally {
       setEditLoading(false);
     }
   };
 
   const handleExportCSV = () => {
-    if (leads.length === 0) {
-      toast.error("No leads to export.");
-      return;
-    }
-    
+    if (leads.length === 0) { toast.error("No leads to export."); return; }
     const headers = ["Client Name", "Company", "Email", "Phone", "Status", "Added On"];
-    const csvRows = [
-      headers.join(","),
-      ...leads.map(lead => [
-        `"${lead.clientName}"`,
-        `"${lead.company}"`,
-        `"${lead.email}"`,
-        `"${lead.phone}"`,
-        `"${lead.status}"`,
-        `"${new Date(lead.createdAt).toLocaleDateString()}"`
-      ].join(","))
-    ];
-
-    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const rows = leads.map(l => [
+      `"${l.clientName}"`, `"${l.company}"`, `"${l.email}"`,
+      `"${l.phone}"`, `"${l.status}"`, `"${new Date(l.createdAt).toLocaleDateString()}"`
+    ].join(","));
+    const blob = new Blob([[headers.join(","), ...rows].join("\n")], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.setAttribute("hidden", "");
-    a.setAttribute("href", url);
-    a.setAttribute("download", "growthdesk_leads.csv");
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = url; a.download = "growthdesk_leads.csv";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    toast.success("CSV exported.");
   };
+
+  const filtered = leads.filter(l =>
+    l.clientName?.toLowerCase().includes(search.toLowerCase()) ||
+    l.company?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <MainLayout>
-
-      <div className="flex justify-between items-center mb-8">
-
+      {/* Header */}
+      <div className="flex flex-wrap gap-4 items-start justify-between mb-7">
         <div>
-
-          <h1 className="text-4xl font-bold dark:text-white">
-            Lead Management
-          </h1>
-
-          <p className="text-gray-500 mt-2 dark:text-gray-400">
-            Manage client leads and sales opportunities.
+          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Lead Management</h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
+            {leads.length > 0 ? `${leads.length} client leads · ${leads.filter(l => l.status === "Closed Won").length} closed won` : "Manage client leads and sales opportunities."}
           </p>
-
         </div>
-        
-        <button 
-          onClick={handleExportCSV}
-          className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-xl font-semibold hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center gap-2 shadow-sm"
-        >
-          Export CSV
-        </button>
-
+        <div className="flex gap-2">
+          <button onClick={handleExportCSV} className="btn-secondary text-sm">
+            <FiDownload size={14} /> Export CSV
+          </button>
+          <button onClick={() => setShowAddForm(!showAddForm)} className="btn-primary text-sm">
+            <FiPlus size={14} /> Add Lead
+          </button>
+        </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 mb-8 grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
+      {/* Add Lead Form */}
+      <AnimatePresence>
+        {showAddForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden mb-6"
+          >
+            <form onSubmit={handleSubmit} className="card p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2 flex items-center justify-between mb-1">
+                <h3 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>New Lead Details</h3>
+                <button type="button" onClick={() => setShowAddForm(false)} style={{ color: "var(--text-muted)" }}>
+                  <FiX size={16} />
+                </button>
+              </div>
+              {[
+                { name: "clientName", placeholder: "Client name", type: "text" },
+                { name: "company", placeholder: "Company", type: "text" },
+                { name: "email", placeholder: "Work email", type: "email" },
+                { name: "phone", placeholder: "Phone number", type: "text" },
+              ].map(({ name, placeholder, type }) => (
+                <input
+                  key={name}
+                  type={type}
+                  name={name}
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+              ))}
+              <div className="sm:col-span-2 flex gap-3">
+                <button type="submit" className="btn-primary flex-1">Add to Pipeline</button>
+                <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary flex-1">Cancel</button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
+      {/* Search */}
+      <div className="relative mb-5">
+        <FiSearch size={14} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
         <input
           type="text"
-          name="clientName"
-          placeholder="Client Name"
-          value={formData.clientName}
-          onChange={handleChange}
-          className="border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-        />
-
-        <input
-          type="text"
-          name="company"
-          placeholder="Company"
-          value={formData.company}
-          onChange={handleChange}
-          className="border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-        />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-        />
-
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-          className="border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:bg-slate-700 dark:text-white transition-colors"
-        />
-
-        <button className="bg-black dark:bg-indigo-600 text-white p-3 rounded-xl md:col-span-2 hover:bg-gray-800 dark:hover:bg-indigo-700 transition font-semibold">
-          Add New Lead
-        </button>
-
-      </form>
-
-      <div className="mb-6">
-
-        <input
-          type="text"
-          placeholder="Search leads..."
+          placeholder="Search by client name or company..."
           value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
-          className="w-full bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white transition-colors"
+          onChange={(e) => setSearch(e.target.value)}
+          className="input-field pl-10"
         />
-
       </div>
 
-      {loading && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden p-6 space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex space-x-4 animate-pulse border-b dark:border-slate-700 pb-4 last:border-b-0 last:pb-0">
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4"></div>
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4"></div>
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4"></div>
-              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/4"></div>
-            </div>
-          ))}
-        </div>
-      )}
-
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-4 rounded-2xl mb-6">
+        <div className="mb-5 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/30 text-red-600 dark:text-red-400 text-sm">
           {error}
         </div>
       )}
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
-
-        <table className="w-full text-sm">
-
-          <thead className="bg-gray-50 dark:bg-slate-900 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700">
-
-            <tr>
-
-              <th className="p-4 text-left font-medium">
-                Client
-              </th>
-
-              <th className="p-4 text-left font-medium">
-                Company
-              </th>
-
-              <th className="p-4 text-left font-medium">
-                Status
-              </th>
-
-              <th className="p-4 text-left font-medium">
-                Action
-              </th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {leads.length === 0 && !loading && (
+      {/* Table */}
+      <div className="card overflow-hidden">
+        {loading ? (
+          <div className="p-6 space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="skeleton h-4 rounded w-1/4"></div>
+                <div className="skeleton h-4 rounded w-1/4"></div>
+                <div className="skeleton h-4 rounded w-1/5"></div>
+                <div className="skeleton h-4 rounded w-1/6"></div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <table className="data-table">
+            <thead>
               <tr>
-                <td
-                  colSpan="4"
-                  className="text-center p-12 text-gray-500 dark:text-gray-400 font-medium"
-                >
-                  Your pipeline is empty. Add your first lead to start tracking opportunities.
-                </td>
+                <th>Client</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Added</th>
+                <th>Actions</th>
               </tr>
-            )}
-
-            {leads
-              .filter((lead) =>
-                lead.clientName
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              )
-              .map((lead) => (
-
-                <tr
-                  key={lead._id}
-                  className="border-b border-gray-100 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
-                  onClick={() => handleOpenModal(lead)}
-                >
-
-                  <td className="p-4 font-semibold text-gray-900 dark:text-white">
-                    {lead.clientName}
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-14">
+                    <div className="text-3xl mb-3">🔍</div>
+                    <p className="font-semibold text-sm" style={{ color: "var(--text-muted)" }}>
+                      {search ? "No leads match your search." : "Your pipeline is empty. Add your first lead to start tracking opportunities."}
+                    </p>
                   </td>
-
-                  <td className="p-4 text-gray-500 dark:text-gray-400">
-                    {lead.company}
-                  </td>
-
-                  <td className="p-4">
-
-                    <select
-                      value={lead.status}
-                      onClick={(e) => e.stopPropagation()}
-                      onChange={async (e) => {
-                        try {
-                          await api.put(`/api/leads/${lead._id}`, { status: e.target.value });
-                          toast.success("Status updated");
-                          fetchLeads();
-                        } catch (error) {
-                          toast.error("Failed to update status");
-                        }
-
-                      }}
-                      className="border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                    >
-
-                      <option>New Lead</option>
-                      <option>Contacted</option>
-                      <option>Quotation Sent</option>
-                      <option>Negotiation</option>
-                      <option>Closed Won</option>
-
-                    </select>
-
-                  </td>
-
-                  <td className="p-4">
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteLead(lead._id);
-                      }}
-                      className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-500/20 transition"
-                    >
-                      Delete
-                    </button>
-
-                  </td>
-
                 </tr>
-
-              ))}
-
-          </tbody>
-
-        </table>
-
+              ) : (
+                filtered.map((lead) => {
+                  const sc = STATUS_COLORS[lead.status] || { bg: "rgba(156,163,175,0.1)", text: "#6b7280" };
+                  return (
+                    <tr
+                      key={lead._id}
+                      className="cursor-pointer"
+                      onClick={() => handleOpenModal(lead)}
+                    >
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <div className="w-7 h-7 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold flex-shrink-0">
+                            {lead.clientName?.[0]?.toUpperCase()}
+                          </div>
+                          <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{lead.clientName}</span>
+                        </div>
+                      </td>
+                      <td className="text-sm" style={{ color: "var(--text-muted)" }}>{lead.company}</td>
+                      <td>
+                        <select
+                          value={lead.status}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={async (e) => {
+                            try {
+                              await api.put(`/api/leads/${lead._id}`, { status: e.target.value });
+                              toast.success("Status updated.");
+                              fetchLeads();
+                            } catch { toast.error("Failed to update."); }
+                          }}
+                          className="text-xs font-bold px-2.5 py-1.5 rounded-full border-0 cursor-pointer outline-none"
+                          style={{ backgroundColor: sc.bg, color: sc.text }}
+                        >
+                          {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </td>
+                      <td className="text-xs" style={{ color: "var(--text-muted)" }}>
+                        {new Date(lead.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      </td>
+                      <td>
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => handleOpenModal(lead)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                            style={{ color: "var(--text-muted)" }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--surface)"}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                          >
+                            <FiEdit2 size={13} />
+                          </button>
+                          <button
+                            onClick={() => deleteLead(lead._id)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          >
+                            <FiTrash2 size={13} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
 
-      {selectedLead && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
-            <button onClick={handleCloseModal} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
-              ✕
-            </button>
-            <h2 className="text-2xl font-bold mb-1 dark:text-white">{selectedLead.clientName}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Added on: {new Date(selectedLead.createdAt).toLocaleDateString()}</p>
-            
-            <form onSubmit={handleEditSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
-                <input type="text" name="company" value={editFormData.company} onChange={handleEditChange} className="w-full border border-gray-200 dark:border-slate-600 p-3 rounded-xl dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                <input type="email" name="email" value={editFormData.email} onChange={handleEditChange} className="w-full border border-gray-200 dark:border-slate-600 p-3 rounded-xl dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
-                <input type="text" name="phone" value={editFormData.phone} onChange={handleEditChange} className="w-full border border-gray-200 dark:border-slate-600 p-3 rounded-xl dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
-                <select name="status" value={editFormData.status} onChange={handleEditChange} className="w-full border border-gray-200 dark:border-slate-600 p-3 rounded-xl dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option>New Lead</option>
-                  <option>Contacted</option>
-                  <option>Quotation Sent</option>
-                  <option>Negotiation</option>
-                  <option>Closed Won</option>
-                </select>
-              </div>
-              <button disabled={editLoading} className="w-full bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition font-semibold disabled:opacity-50 mt-4">
-                {editLoading ? "Saving Changes..." : "Save Changes"}
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {selectedLead && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="modal-overlay"
+            onClick={() => setSelectedLead(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.2 }}
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedLead(null)}
+                className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
+                style={{ color: "var(--text-muted)" }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--surface)"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                <FiX size={16} />
               </button>
-            </form>
-          </div>
-        </div>
-      )}
 
+              <div className="mb-6">
+                <h2 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>{selectedLead.clientName}</h2>
+                <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+                  Added {new Date(selectedLead.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+                </p>
+              </div>
+
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                {[
+                  { name: "company", label: "Company", type: "text" },
+                  { name: "email", label: "Email address", type: "email" },
+                  { name: "phone", label: "Phone number", type: "text" },
+                ].map(({ name, label, type }) => (
+                  <div key={name}>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>{label}</label>
+                    <input
+                      type={type}
+                      name={name}
+                      value={editFormData[name]}
+                      onChange={(e) => setEditFormData({ ...editFormData, [e.target.name]: e.target.value })}
+                      className="input-field"
+                      required
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>Pipeline Stage</label>
+                  <select
+                    name="status"
+                    value={editFormData.status}
+                    onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
+                    className="input-field"
+                  >
+                    {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button type="submit" disabled={editLoading} className="btn-primary flex-1">
+                    {editLoading ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button type="button" onClick={() => setSelectedLead(null)} className="btn-secondary flex-1">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </MainLayout>
   );
 }
