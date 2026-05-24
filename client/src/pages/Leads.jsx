@@ -202,8 +202,15 @@ function Leads() {
       </div>
 
       {loading && (
-        <div className="bg-white p-6 rounded-2xl shadow mb-6">
-          Loading leads...
+        <div className="bg-white rounded-2xl shadow overflow-hidden p-4 space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex space-x-4 animate-pulse border-b pb-4 last:border-b-0 last:pb-0">
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+            </div>
+          ))}
         </div>
       )}
 
@@ -247,9 +254,9 @@ function Leads() {
               <tr>
                 <td
                   colSpan="4"
-                  className="text-center p-10 text-gray-500"
+                  className="text-center p-10 text-gray-500 font-medium"
                 >
-                  No leads available yet. Start by adding your first client lead.
+                  No leads yet. Start by adding your first lead.
                 </td>
               </tr>
             )}
