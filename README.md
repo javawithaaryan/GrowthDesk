@@ -1,201 +1,143 @@
 # GrowthDesk
 
-GrowthDesk is a full-stack CRM and sales workflow management platform built for business development and sales teams in manufacturing companies.
+GrowthDesk is a modern, full-stack CRM and sales workflow management platform built to help business development teams track leads, manage pipelines, and close deals efficiently. 
 
-The project was developed as part of a MERN Stack Developer Internship technical assessment to simulate a real-world business workflow system similar to platforms like Jira, GoodDay Work, and modern CRM dashboards.
-
-The goal was not just to build static pages, but to create a connected workflow-driven application with authentication, lead tracking, sales pipeline management, reporting dashboards, and protected APIs.
+Originally developed as a technical assessment for a MERN Stack Developer Internship, the project has evolved into a production-ready application showcasing clean architecture, responsive UI, and AI-driven productivity tools.
 
 ---
 
-# Project Overview
+## 🚀 Project Overview
 
-Manufacturing companies often manage client leads, quotations, negotiations, and sales workflows across multiple stages. GrowthDesk helps organize this process in a centralized dashboard where teams can:
+Managing a sales cycle requires organization, speed, and strategic follow-ups. GrowthDesk provides a centralized hub where teams can:
+- **Track Leads**: Add, edit, and organize client opportunities.
+- **Visualize the Pipeline**: Move leads through a Kanban-style board from initial contact to closed deals.
+- **Leverage AI (Powered by Gemini)**: Draft cold outreach emails, generate negotiation strategies, and write follow-ups instantly using an integrated AI Assistant.
+- **Monitor Analytics**: View real-time dashboards and conversion charts to gauge performance.
 
-- Manage business leads
-- Track lead progress
-- Visualize sales pipelines
-- Monitor analytics
-- Handle workflow updates securely
-
-The application follows a modular MERN architecture and focuses on clean structure, reusable components, protected routes, and production-ready practices.
+The platform is built with a focus on stability, realistic business logic, and a polished user experience.
 
 ---
 
-# Features
+## ✨ Features
 
-## Authentication System
-- User registration and login
-- JWT-based authentication
-- Protected frontend routes
-- Protected backend APIs
-- Session handling with localStorage
+### 🔐 Authentication & Security
+- Secure user registration and login using JWT.
+- Protected API routes and frontend views.
+- Centralized Axios interceptors for automated token handling.
 
-## Dashboard
-- Dynamic analytics cards
-- Lead statistics overview
-- Active and closed deal tracking
-- Revenue summary
-- Analytics chart integration
+### 📊 Dashboard & Analytics
+- Dynamic metric cards (Total Leads, Active Deals, Revenue).
+- Recent Leads overview for quick access to active opportunities.
+- Interactive charts built with Recharts for visual performance tracking.
 
-## Lead Management
-- Add new leads
-- Delete leads
-- Search and filter leads
-- Update lead statuses
-- Persistent MongoDB storage
-- Loading and error handling states
+### 👥 CRM & Lead Management
+- Full CRUD capabilities for client leads.
+- Dedicated Lead Details Modal for quick editing and status updates.
+- Real-time search functionality.
+- Professional UI elements: Skeleton loaders, empty states, and toast notifications.
 
-## Sales Pipeline
-- Dynamic Kanban-style pipeline board
-- Automatic grouping by lead status
-- Real-time workflow visualization
+### 🧠 AI Assistant (Gemini API)
+- Built-in AI workspace for sales professionals.
+- **Quick Actions**: One-click prompts for Follow-ups, Sales Strategy, Cold Outreach, and Negotiation.
+- Conversation history tracking.
+- Seamless copy-to-clipboard functionality.
 
-## Reports & Analytics
-- Revenue reporting section
-- Deal performance tracking
-- Sales insights dashboard
-
-## Production Features
-- Environment-based API configuration
-- Reusable layout architecture
-- Responsive UI design
-- Modular folder structure
-- Clean API separation
-- Git version control workflow
+### 📈 Sales Pipeline
+- Status-driven pipeline visualization (New Lead → Contacted → Quotation Sent → Negotiation → Closed Won).
+- Dynamic lead counts per stage and status-colored indicators.
 
 ---
 
-# Tech Stack
+## 🛠 Tech Stack
 
-## Frontend
-- React.js
-- Vite
-- Tailwind CSS
-- Axios
+**Frontend:**
+- React.js & Vite
+- Tailwind CSS (v4)
 - React Router DOM
+- Axios & React Hot Toast
 - Recharts
 
-## Backend
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
+**Backend:**
+- Node.js & Express.js
+- MongoDB & Mongoose
+- JSON Web Tokens (JWT)
+- Google Gen AI SDK (`@google/genai`)
 
 ---
 
-# Folder Structure
+## 📁 Architecture & Structure
 
-```bash
+The codebase is strictly separated into a modular `client` and `server` architecture. 
+
+```
 GrowthDesk/
-│
 ├── client/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── App.jsx
+│   │   ├── components/   # Reusable UI elements & charts
+│   │   ├── layouts/      # Main sidebar layout wrapper
+│   │   ├── pages/        # Route-level components (Dashboard, Leads, AIAssistant, etc.)
+│   │   ├── services/     # Centralized api.js instance
+│   │   └── App.jsx       # Routing configuration
 │
 ├── server/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── config/
-│   └── server.js
-│
-└── README.md
+│   ├── controllers/      # Business logic (auth, leads, dashboard, ai)
+│   ├── middleware/       # JWT verification
+│   ├── models/           # Mongoose schemas
+│   ├── routes/           # Express route definitions
+│   └── server.js         # Entry point
 ```
 
 ---
 
-# Installation & Setup
+## ⚙️ Setup Instructions
 
-## Clone Repository
-
+### 1. Clone Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/GrowthDesk.git
+git clone https://github.com/javawithaaryan/GrowthDesk.git
+cd GrowthDesk
 ```
 
----
-
-## Backend Setup
-
+### 2. Backend Setup
 ```bash
 cd server
 npm install
-npm run dev
 ```
-
-Create a `.env` file inside the `server` folder:
-
+Create a `.env` file in the `server` directory:
 ```env
 PORT=5000
-MONGO_URI=YOUR_MONGODB_URI
-JWT_SECRET=YOUR_SECRET_KEY
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_google_gemini_api_key
 ```
-
----
-
-## Frontend Setup
-
+Run the backend:
 ```bash
-cd client
-npm install
 npm run dev
 ```
 
-Create a `.env` file inside the `client` folder:
-
+### 3. Frontend Setup
+```bash
+cd ../client
+npm install
+```
+Create a `.env` file in the `client` directory:
 ```env
 VITE_API_URL=http://localhost:5000
 ```
+Run the frontend:
+```bash
+npm run dev
+```
 
 ---
 
-# Workflow Logic
+## 🔮 Future Improvements
 
-The application workflow is based on a CRM-style sales lifecycle:
-
-1. New Lead
-2. Contacted
-3. Quotation Sent
-4. Negotiation
-5. Closed Won
-
-Leads automatically move through the sales pipeline based on their updated status.
+While this version is stable and complete for its scope, future updates could include:
+- Drag-and-drop interactions for the Pipeline board.
+- Role-based access control (Admin vs. Sales Rep).
+- Automated email integrations (e.g., SendGrid/Nodemailer).
+- Exportable CSV/PDF reports.
 
 ---
 
-# Screenshots
-
-## Dashboard
-(Add screenshot here)
-
-## Lead Management
-(Add screenshot here)
-
-## Pipeline Board
-(Add screenshot here)
-
-## Reports
-(Add screenshot here)
-
----
-
-# Future Improvements
-
-- Drag-and-drop pipeline management
-- Role-based access control
-- Export reports to PDF/Excel
-- Email notifications
-- Team collaboration features
-- Advanced analytics dashboards
-
----
-
-# Author
-
-Developed by Aryan as part of a MERN Stack Developer Internship assessment project.
+*Designed and developed by Aryan as a comprehensive MERN stack showcase.*
