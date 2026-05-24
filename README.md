@@ -1,131 +1,247 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150x150/000000/FFFFFF?text=GrowthDesk" alt="GrowthDesk Logo" width="120" height="120" />
-  <h1>GrowthDesk CRM</h1>
-  <p><b>The AI-enhanced CRM built for modern B2B and manufacturing sales teams.</b></p>
-  
-  [![Frontend Deployment](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel)](https://growth-desk-phi.vercel.app)
-  [![Backend API](https://img.shields.io/badge/Render-Live-46E3B7?style=for-the-badge&logo=render)](https://growthdesk-backend.onrender.com)
-  [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-  [![TailwindCSS](https://img.shields.io/badge/Tailwind-v4.3-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
-  [![Gemini AI](https://img.shields.io/badge/Gemini-AI%20Powered-8E75B2?style=for-the-badge&logo=google)](https://deepmind.google/technologies/gemini/)
+  <img src="client/src/assets/logo/logo-dark.png" alt="GrowthDesk Logo" width="320"/>
+
+  <br/>
+  <br/>
+
+# GrowthDesk CRM
+
+### An AI-assisted CRM workspace built for modern B2B sales teams
+
+  <br/>
+
+  [![Frontend](https://img.shields.io/badge/Vercel-Deployed-000000?style=flat-square&logo=vercel&logoColor=white)](https://growth-desk-phi.vercel.app)
+  [![Backend](https://img.shields.io/badge/Render-Live-46E3B7?style=flat-square&logo=render&logoColor=white)](https://growthdesk-backend.onrender.com)
+  [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+  [![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://mongodb.com/)
+  [![Tailwind](https://img.shields.io/badge/Tailwind-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+  [![Gemini AI](https://img.shields.io/badge/Gemini-AI-8E75B2?style=flat-square&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+
 </div>
 
-<br />
+---
 
-## 📖 The Story Behind GrowthDesk
+## Why I Built This
 
-Most CRMs feel like glorified spreadsheets. We built **GrowthDesk** because we noticed manufacturing and B2B sales teams were spending more time updating their pipelines than actually talking to clients. 
+Most CRMs I've worked with feel like a chore to maintain. They're built around data entry rather than helping you actually sell. GrowthDesk started as a personal project to fix that — a clean, focused workspace where sales teams can track deals, see what's happening at a glance, and get quick help from AI when they need to write a follow-up or handle a tough negotiation.
 
-GrowthDesk isn't just another dashboard. It's a proactive workspace. We integrated **Google's Gemini AI** deeply into the workflow to help sales reps draft follow-ups, synthesize client history, and suggest negotiation tactics—all without leaving the pipeline view. It feels alive, it's fast, and it respects the user's time.
+It's built on the MERN stack with Google's Gemini AI integrated into the workflow. Nothing overcomplicated. Just a practical tool that I'd want to use myself.
 
-## ✨ Core Features
-
-GrowthDesk provides a focused, zero-bloat experience tailored to closing deals.
-
-### 🎯 Sales Overview & Pipeline
-- **Kanban-style Pipeline**: Drag-and-drop your leads across intuitive stages (Contacted, Quotation Sent, Negotiation, Closed Won).
-- **Activity Timeline**: A realistic, real-time feed of what your sales team is doing. 
-- **Team Collaboration**: Visibility into who is online, assigned reps, and quick deal assignments.
-
-### 🤖 Sales AI Workspace (Gemini Powered)
-- **Contextual Drafting**: Generate highly specific cold outreach or follow-up emails based on lead status.
-- **Negotiation Tactics**: Get AI-driven advice on handling objections and discount requests.
-- **Tone Control**: Seamlessly switch between professional, friendly, or urgent tones to match the client's vibe.
-
-### 📊 Performance Insights
-- **Revenue Analytics**: Track your Monthly Recurring Revenue (MRR) and conversion rates using beautifully integrated Recharts.
-- **One-Click Exports**: Export your pipeline to CSV or generate a formatted PDF of your performance reports instantly.
-- **Dark Mode**: A meticulously crafted, premium dark theme that saves your eyes during late-night pipeline reviews.
+---
 
 ## 📸 Screenshots
 
-| Sales Overview | Sales AI Workspace |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/500x300/000000/FFFFFF?text=Sales+Overview+Dashboard" alt="Dashboard" /> | <img src="https://via.placeholder.com/500x300/000000/FFFFFF?text=Sales+AI+Workspace" alt="AI Workspace" /> |
+### Login Experience
+![Login](client/src/assets/screenshots/login.png)
 
-| Visual Pipeline | Performance Insights |
-| :---: | :---: |
-| <img src="https://via.placeholder.com/500x300/000000/FFFFFF?text=Pipeline+Kanban" alt="Pipeline" /> | <img src="https://via.placeholder.com/500x300/000000/FFFFFF?text=Analytics+%26+Reports" alt="Reports" /> |
+### Sales Overview
+![Dashboard](client/src/assets/screenshots/dashboard.png)
 
-## 🛠️ Architecture & Tech Stack
+### Lead Management
+![Leads](client/src/assets/screenshots/leads.png)
 
-GrowthDesk is built on the robust MERN stack, heavily optimized for modern React patterns.
+### Sales Pipeline
+![Pipeline](client/src/assets/screenshots/pipeline.png)
 
-**Frontend:**
-- `React 19` (Vite)
-- `Tailwind CSS v4` for utility-first styling and native dark mode.
-- `Recharts` for performant, responsive data visualization.
-- `jsPDF` & `html2canvas` for client-side reporting.
+### Performance Insights
+![Reports](client/src/assets/screenshots/reports.png)
 
-**Backend:**
-- `Node.js` & `Express.js`
-- `MongoDB` with `Mongoose` ORM
-- `JWT` for secure, stateless authentication.
-- `@google/genai` for the AI workspace integration.
-
-### Folder Structure
-```text
-growthdesk/
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable UI (Timeline, Team, Charts)
-│   │   ├── context/        # Global state (ThemeContext)
-│   │   ├── layouts/        # Main layouts (Sidebar, Nav)
-│   │   ├── pages/          # Routable views (Pipeline, Leads, Settings)
-│   │   └── services/       # Axios API interceptors
-├── server/                 # Node/Express backend
-│   ├── controllers/        # Route logic (Auth, Leads, AI)
-│   ├── models/             # Mongoose schemas
-│   ├── routes/             # API endpoint definitions
-│   └── middleware/         # JWT verification & Error handling
-```
-
-## 🚀 Local Setup
-
-Want to run GrowthDesk locally? It takes less than 5 minutes.
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/GrowthDesk.git
-   cd GrowthDesk
-   ```
-
-2. **Setup the Backend:**
-   ```bash
-   cd server
-   npm install
-   ```
-   Create a `.env` file in the `server` directory:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   GEMINI_API_KEY=your_gemini_key
-   ```
-   Run the backend:
-   ```bash
-   npm run dev
-   ```
-
-3. **Setup the Frontend:**
-   ```bash
-   cd ../client
-   npm install
-   ```
-   Create a `.env` file in the `client` directory:
-   ```env
-   VITE_API_URL=http://localhost:5000
-   ```
-   Run the frontend:
-   ```bash
-   npm run dev
-   ```
-
-## 🔮 Future Improvements
-While GrowthDesk is production-ready, we have exciting features on the roadmap:
-- **Email Inbox Sync:** Two-way sync with Gmail/Outlook to track client replies directly in the timeline.
-- **Webhooks:** Trigger external events in Zapier when a lead moves to "Closed Won".
-- **Advanced RBAC:** Deeper Role-Based Access Control enforcing read/write permissions at the API level.
+### Sales AI Workspace
+![AI Workspace](client/src/assets/screenshots/ai-workspace.png)
 
 ---
-*Built with passion by the GrowthDesk Team.*
+
+## Features
+
+### Sales Overview
+- Summary cards for total leads, active deals, closed deals, and estimated revenue
+- Activity timeline showing recent changes across the pipeline
+- Team status panel with per-rep lead counts
+- Personalized greeting using the logged-in user's real name and time of day
+
+### Lead Management
+- Add, edit, and delete client leads
+- Inline status updates directly from the table (no modal required)
+- Search by client name or company
+- CSV export for offline reporting
+
+### Visual Pipeline
+- Kanban-style board organized by deal stage (New Lead → Closed Won)
+- Per-stage color-coded headers and card counters
+- Hover lift effects on each deal card
+
+### Performance Insights
+- Revenue, conversion rate, and deal metrics
+- Sales trend chart and conversion funnel chart (Recharts)
+- Recent deal performance table with rep attribution
+- One-click PDF export using jsPDF and html2canvas
+
+### Sales AI Workspace (Gemini)
+- Generate follow-up emails, cold outreach drafts, and negotiation responses
+- Quick templates for common sales scenarios
+- Session history for recent prompts
+- Copy-to-clipboard with confirmation state
+
+### Settings
+- Profile info pulled directly from logged-in user (no hardcoded values)
+- Dark/light mode toggle (persisted to localStorage)
+- AI preferences — writing tone, auto-draft toggle
+- Password change form (UI ready, backend-compatible)
+
+### Auth
+- JWT-based login and registration
+- Protected routes on both frontend and backend
+- User info stored in localStorage, read across all pages
+
+---
+
+## Tech Stack
+
+**Frontend**
+- React 19 with Vite
+- Tailwind CSS v4 (custom dark mode via CSS variables)
+- Framer Motion (page transitions and micro-animations)
+- Recharts (sales and conversion charts)
+- jsPDF + html2canvas (PDF export)
+- React Hot Toast (notification system)
+- React Icons (FI set)
+
+**Backend**
+- Node.js + Express.js
+- MongoDB with Mongoose
+- JWT for stateless authentication
+- @google/genai (Gemini AI integration)
+
+**Deployment**
+- Frontend → Vercel
+- Backend → Render
+
+---
+
+## Folder Structure
+
+```
+GrowthDesk/
+├── client/                         # React + Vite frontend
+│   ├── public/
+│   │   └── favicon.png
+│   └── src/
+│       ├── assets/
+│       │   ├── logo/               # logo-dark.png, favicon.png
+│       │   └── screenshots/        # App screenshots for README
+│       ├── components/             # Reusable UI components
+│       │   ├── ActivityTimeline.jsx
+│       │   ├── ConversionChart.jsx
+│       │   ├── ProtectedRoute.jsx
+│       │   ├── SalesChart.jsx
+│       │   └── TeamCollaboration.jsx
+│       ├── context/
+│       │   └── ThemeContext.jsx     # Dark/light mode state
+│       ├── layouts/
+│       │   └── MainLayout.jsx      # Sidebar, header, page wrapper
+│       ├── pages/
+│       │   ├── AIAssistant.jsx
+│       │   ├── Dashboard.jsx
+│       │   ├── Leads.jsx
+│       │   ├── Login.jsx
+│       │   ├── Pipeline.jsx
+│       │   ├── Register.jsx
+│       │   ├── Reports.jsx
+│       │   └── Settings.jsx
+│       └── services/
+│           ├── api.js              # Axios instance with auth header
+│           └── authService.js      # Login / register API calls
+│
+└── server/                         # Node.js + Express backend
+    ├── config/                     # DB connection setup
+    ├── controllers/                # Route logic (auth, leads, AI)
+    ├── middleware/                 # JWT auth verification
+    ├── models/                     # Mongoose schemas (User, Lead)
+    ├── routes/                     # API route definitions
+    └── server.js                   # App entry point
+```
+
+---
+
+## Local Setup
+
+**Prerequisites:** Node.js 18+, MongoDB URI, Gemini API key
+
+**1. Clone the repo**
+```bash
+git clone https://github.com/javawithaaryan/GrowthDesk.git
+cd GrowthDesk
+```
+
+**2. Set up the backend**
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file inside `/server`:
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Start the server:
+```bash
+npm run dev
+```
+
+**3. Set up the frontend**
+```bash
+cd ../client
+npm install
+```
+
+Create a `.env` file inside `/client`:
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+Start the frontend:
+```bash
+npm run dev
+```
+
+The app will be running at `http://localhost:5173`.
+
+---
+
+## Deployment
+
+| Service | URL |
+|---|---|
+| Frontend (Vercel) | [growth-desk-phi.vercel.app](https://growth-desk-phi.vercel.app) |
+| Backend (Render) | [growthdesk-backend.onrender.com](https://growthdesk-backend.onrender.com) |
+
+> **Note:** The Render backend is on a free plan, so the first request after a period of inactivity may take 30–50 seconds to warm up. This is expected behaviour.
+
+---
+
+## What I'd Improve Next
+
+A few things I'd build out if I continued this project:
+
+- **Drag-and-drop pipeline** — Let users move cards between stages manually
+- **Email sync** — Connect Gmail or Outlook to track replies inside the lead timeline
+- **Role-based access** — Sales reps vs. managers with different views and edit permissions
+- **Task reminders** — Scheduled follow-up alerts tied to specific leads
+- **Analytics filters** — Filter reports by date range, rep, or deal stage
+
+---
+
+## Notes
+
+- `.env` files are **not tracked** in this repository. All secrets are kept local and injected via environment variables on Vercel and Render.
+- The AI workspace uses **Gemini 1.5 Flash** via the `@google/genai` SDK. Responses are generated server-side and returned to the frontend.
+- Dark mode is implemented via CSS variables on the root element, toggled by adding/removing a `.dark` class — no framework dependency.
+
+---
+
+*Built by [Aaryan](https://github.com/javawithaaryan) as a full-stack project to explore AI-assisted SaaS workflows.*
