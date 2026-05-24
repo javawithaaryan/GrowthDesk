@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -20,9 +21,7 @@ function Pipeline() {
       setLeads(response.data);
 
     } catch (error) {
-
-      console.log(error);
-
+      toast.error("Failed to fetch leads");
     }
   };
 
